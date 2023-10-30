@@ -9,14 +9,12 @@ function extractFruit(e) {
 
 function fetchFruitData(fruit){
     fetch(`https://fruity-api.onrender.com/fruits/${fruit}`)
-        // .then(processResponse)
-        .then(resp => resp.json())
+        .then(processResponse)
         .then(data => addFruit(data))
         .catch(err => console.log(err))
 }
 
 function processResponse(resp) {
-    console.log(resp, "hello")
     if(resp.ok){
         return resp.json()
     } else {
@@ -28,9 +26,9 @@ const fruitList = document.querySelector("#fruitSection ul")
 const fruitNutrition = document.querySelector("#nutritionSection p")
 
 let calories = 0
+const fruitCal = {}
 
 function addFruit(fruit) {
-    console.log(fruit)
     if(!fruit){
         console.log("Invalid fruit")
     } else {
@@ -39,12 +37,21 @@ function addFruit(fruit) {
     li.textContent = fruit['name']
     fruitList.appendChild(li)
 
+    fruitCal[fruit.name] = fruit.nutritions.calories
+
     calories += fruit.nutritions.calories
     fruitNutrition.textContent = calories
     } 
 }
 
 function removeFruit(e){
+    const fruitName = e.target.textContent
+    calories -= fruitCal[fruitName]
+    fruitNutrition.textContent = calories
+
+    delete fruitCal[fruitName]
+
+
     e.target.remove()
 }
 
